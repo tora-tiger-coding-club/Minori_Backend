@@ -1,0 +1,97 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+group = 'backend'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+    springCloudVersion = "2024.0.0"
+}
+
+dependencies {
+    // Spring Boot 관련 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation ('org.springframework.boot:spring-boot-starter-web') {
+        // AWS Lambda 환경에서 Tomcat 제외
+        if (project.findProperty('aws.lambda') == 'true') {
+            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        }
+    }
+
+    // AWS Lambda 관련 의존성 추가
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.1.0'
+//    implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
+//    implementation 'com.amazonaws:aws-lambda-java-events:3.11.6'
+//    runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.5.1'
+
+    // Lombok 및 개발용
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // DB 관련 의존성
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Lombok Annotation Processor
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 테스트 관련 의존성
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+// AWS Lambda 배포를 위한 ZIP 빌드 작업
+tasks.register('buildZip', Zip) {
+    group = "distribution"
+    description = "Builds a deployment-ready zip file for AWS Lambda"
+
+    // Lambda 핸들러 파일 추가
+    from { tasks.named('bootJar').get().archiveFile.get().asFile } // 실행 가능한 JAR 파일 포함
+    into('lib') {
+        from configurations.runtimeClasspath // 필요한 모든 의존성 포함
+    }
+    archiveFileName = "${project.name}-${version}.zip" // ZIP 파일 이름
+    destinationDirectory = file("$buildDir/distributions") // ZIP 저장 경로
+}
