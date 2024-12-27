@@ -36,6 +36,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### SAM BUILD FILE ###
-.aws-sam/
