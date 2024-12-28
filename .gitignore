@@ -1,5 +1,6 @@
 HELP.md
 .gradle
+.aws-sam/
 build/
 logs/
 !gradle/wrapper/gradle-wrapper.jar
