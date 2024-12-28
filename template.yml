@@ -6,8 +6,8 @@ Globals:
   Function:
       Timeout: 10
       MemorySize: 512
-      Architectures: 
-      - arm64
+      # Architectures: 
+      # - arm64
   Api:
     EndpointConfiguration: REGIONAL
 Parameters:
