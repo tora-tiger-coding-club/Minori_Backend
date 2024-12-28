@@ -1,6 +1,5 @@
 HELP.md
 .gradle
-
 .aws-sam/
 build/
 logs/
