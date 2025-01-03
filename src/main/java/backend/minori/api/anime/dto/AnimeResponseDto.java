@@ -1,10 +1,12 @@
 package backend.minori.api.anime.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class AnimeResponseDto {
     private Long animeId;
     private String titleKr;
