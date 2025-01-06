@@ -35,7 +35,7 @@ public class UserController {
                             .username(user.getUsername())
                             .email(user.getEmail())
                             .isPublic(user.isPublic())
-                            .bio(user.getBio())
+                            .bio(user.getIntroduce())
                             .activated(user.getActivated())
                             .createdAt(user.getCreatedAt())
                             .updatedAt(user.getUpdatedAt())
