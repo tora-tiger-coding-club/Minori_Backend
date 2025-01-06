@@ -1,5 +1,6 @@
 package backend.minori.api.user.repository;
 
+import backend.minori.domain.SocialType;
 import backend.minori.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAll();
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByNickname(String nickname);
+
+    Optional<User> findByRefreshToken(String refreshToken);
+
+    Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 }

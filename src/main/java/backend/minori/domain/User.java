@@ -3,16 +3,18 @@ package backend.minori.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 
 @Getter
-@Setter
+@NoArgsConstructor(access =  AccessLevel.PROTECTED)
+@Builder
 @Entity
-@Table(name = "users") // user 는 DB 에서의 예약어
+@Table(name = "users")
+@AllArgsConstructor
+// user 는 DB 에서의 예약어
 public class User extends BaseTimeEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -41,6 +43,20 @@ public class User extends BaseTimeEntity{
     @NotNull
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private SocialType socialType;
+
+    @Column
+    private String socialId;
+
+    @Column
+    private String refreshToken;
+
     @OneToMany(targetEntity = Record.class)
     private List<Record> records;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

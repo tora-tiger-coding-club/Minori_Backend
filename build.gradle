@@ -42,6 +42,8 @@ dependencies {
         }
     }
 
+    implementation 'com.auth0:java-jwt:4.4.0'
+
     // AWS Lambda 관련 의존성 추가
     implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.1.0'
 //    implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
