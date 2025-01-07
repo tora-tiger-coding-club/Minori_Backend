@@ -27,7 +27,7 @@ public class EpisodeReview extends BaseTimeEntity {
   @Column(name = "star", nullable = false)
   private int star;
 
-  @Column(name = "like", nullable = false)
+  @Column(name = "likes", nullable = false)
   private int like;
 
   @Column(name = "is_spoiler", nullable = false)
