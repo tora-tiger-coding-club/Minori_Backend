@@ -5,9 +5,9 @@ import backend.minori.api.anime.service.AnimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
@@ -22,12 +22,12 @@ public class AnimeController {
         List<AnimeResponseDto> animeList = animeService.getAllAnimes();
         return ResponseEntity.ok(animeList);
     }
+    @GetMapping("/search/{animeId}")
+    public ResponseEntity<AnimeResponseDto> getAnimeFromAnimeId(@PathVariable Long animeId) {
+        AnimeResponseDto anime = animeService.getAnimeFromAnimeId(animeId);
+        return ResponseEntity.ok(anime);
+    }
 
-//    @GetMapping("/search/{animeId}")
-//    public ResponseEntity<> sans() {
-//        return ResponseEntity.ok(new MessageDto("hi"));
-//    }
-//
 //    @GetMapping("/season")
 //    public ResponseEntity<> sans() {
 //        return ResponseEntity.ok(new MessageDto("hi"));

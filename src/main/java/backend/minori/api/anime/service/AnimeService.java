@@ -20,4 +20,10 @@ public class AnimeService {
                 .map(AnimeResponseDto::fromEntity)
                 .toList();
     }
+
+    public AnimeResponseDto getAnimeFromAnimeId(Long animeId) {
+        Anime anime = animeRepository.findById(animeId)
+                .orElseThrow(() -> new IllegalArgumentException("애니메이션 정보를 찾을 수 없습니다."));
+        return AnimeResponseDto.fromEntity(anime);
+    }
 }
