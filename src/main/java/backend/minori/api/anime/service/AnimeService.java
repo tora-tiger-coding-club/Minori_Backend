@@ -6,9 +6,7 @@ import backend.minori.domain.Anime;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -19,22 +17,7 @@ public class AnimeService {
     public List<AnimeResponseDto> getAllAnimes() {
         List<Anime> animes = animeRepository.findAll();
         return animes.stream()
-                .map(anime -> new AnimeResponseDto(
-                        anime.getAnimeId(),
-                        anime.getTitleKr(),
-                        anime.getTitleEn(),
-                        anime.getTitleJp(),
-                        anime.getAiringStatus(),
-                        anime.getAiringDay(),
-                        anime.getTotalEpisodeNumber(),
-                        anime.getProduction(),
-                        anime.getPlatform(),
-                        anime.getStoryDescription(),
-                        anime.getDirector(),
-                        anime.getAiringType(),
-                        anime.getSeries().getName()
-                ))
-                .collect(Collectors.toList());
+                .map(AnimeResponseDto::fromEntity)
+                .toList();
     }
-
 }
