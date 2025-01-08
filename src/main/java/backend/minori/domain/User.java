@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access =  AccessLevel.PROTECTED)
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 @AllArgsConstructor
 // user 는 DB 에서의 예약어
