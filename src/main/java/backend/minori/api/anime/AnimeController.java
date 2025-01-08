@@ -2,7 +2,6 @@ package backend.minori.api.anime;
 
 import backend.minori.api.anime.dto.AnimeResponseDto;
 import backend.minori.api.anime.service.AnimeService;
-import backend.minori.api.user.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
