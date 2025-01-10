@@ -11,8 +11,8 @@ import java.util.Map;
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private String email;
-    private Role role;
+    private final String email;
+    private final Role role;
 
     /**
      * Constructs a {@code DefaultOAuth2User} using the provided parameters.

@@ -14,8 +14,8 @@ import java.util.Map;
 @Getter
 public class OAuthAttributes {
     private Map<String, Object> attributes;
-    private String nameAttributeKey;
-    private OAuth2UserInfo oAuth2UserInfo;
+    private final String nameAttributeKey;
+    private final OAuth2UserInfo oAuth2UserInfo;
 
 
     @Builder
@@ -50,7 +50,7 @@ public class OAuthAttributes {
                 .email(oauth2UserInfo.getEmail())
                 .username(oauth2UserInfo.getUsername())
                 .picture(oauth2UserInfo.getPicture())
-                .role(Role.USER)
+                .role(Role.GUEST)
                 .build();
     }
 }

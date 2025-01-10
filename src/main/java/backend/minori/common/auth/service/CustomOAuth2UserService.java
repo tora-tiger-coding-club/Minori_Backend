@@ -21,7 +21,6 @@ import java.util.Map;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private  final UserRepository userRepository;
-
     private static final String GOOGLE =  "google";
     private static final String NAVER =  "naver";
     private static final String KAKAO =  "kakao";
@@ -29,33 +28,45 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
-
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        SocialType socialType = getSocialType(registrationId);
-        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
-
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-        OAuthAttributes authAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
-
-        User createdUser = getUser(authAttributes, socialType);
+        OAuth2User oAuth2User = loadOAuth2User(userRequest);
+        OAuthAttributes authAttributes = getOAuthAttributes(userRequest, oAuth2User);
+        SocialType socialType = getSocialType(userRequest.getClientRegistration().getRegistrationId());
+        User createdUser = getUserOrSaveIfNotPresent(authAttributes, socialType);
 
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
-                attributes,
+                oAuth2User.getAttributes(),
                 authAttributes.getNameAttributeKey(),
                 createdUser.getEmail(),
                 createdUser.getRole()
         );
     }
 
-    private SocialType getSocialType(String registrationId) {
-        return SocialType.GOOGLE;
+    private OAuth2User loadOAuth2User(OAuth2UserRequest userRequest) {
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+        return delegate.loadUser(userRequest);
     }
 
-    private User getUser(OAuthAttributes authAttributes, SocialType socialType) {
+    private OAuthAttributes getOAuthAttributes(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
+                .getUserInfoEndpoint().getUserNameAttributeName();
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        SocialType socialType = getSocialType(userRequest.getClientRegistration().getRegistrationId());
+
+        return OAuthAttributes.of(socialType, userNameAttributeName, attributes);
+    }
+
+    private SocialType getSocialType (String registrationId){
+        return switch (registrationId.toLowerCase()) {
+            case GOOGLE -> SocialType.GOOGLE;
+            case NAVER -> SocialType.NAVER;
+            case KAKAO -> SocialType.KAKAO;
+            case TWITTER -> SocialType.TWITTER;
+            default -> throw new IllegalArgumentException("Unknown registration id: " + registrationId);
+        };
+    }
+
+    private User getUserOrSaveIfNotPresent(OAuthAttributes authAttributes, SocialType socialType) {
         User findUser = userRepository.findBySocialTypeAndSocialId(socialType,
                 authAttributes.getOAuth2UserInfo().getId()).orElse(null);
 
