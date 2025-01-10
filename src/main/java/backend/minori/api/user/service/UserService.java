@@ -6,8 +6,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -15,7 +13,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public List<User> findAllUsers(){
-        return userRepository.findAll();
+    public User findUserById(Long id){
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("유저 정보를 찾을 수 없습니다."));
     }
 }

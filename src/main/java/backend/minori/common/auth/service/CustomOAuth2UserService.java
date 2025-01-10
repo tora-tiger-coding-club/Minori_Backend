@@ -21,10 +21,6 @@ import java.util.Map;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private  final UserRepository userRepository;
-    private static final String GOOGLE =  "google";
-    private static final String NAVER =  "naver";
-    private static final String KAKAO =  "kakao";
-    private static final String TWITTER =  "twitter";
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -56,14 +52,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return OAuthAttributes.of(socialType, userNameAttributeName, attributes);
     }
 
-    private SocialType getSocialType (String registrationId){
-        return switch (registrationId.toLowerCase()) {
-            case GOOGLE -> SocialType.GOOGLE;
-            case NAVER -> SocialType.NAVER;
-            case KAKAO -> SocialType.KAKAO;
-            case TWITTER -> SocialType.TWITTER;
-            default -> throw new IllegalArgumentException("Unknown registration id: " + registrationId);
-        };
+    private SocialType getSocialType(String registrationId){
+        return SocialType.fromString(registrationId);
     }
 
     private User getUserOrSaveIfNotPresent(OAuthAttributes authAttributes, SocialType socialType) {
