@@ -26,4 +26,11 @@ public class AnimeService {
                 .orElseThrow(() -> new IllegalArgumentException("애니메이션 정보를 찾을 수 없습니다."));
         return AnimeResponseDto.fromEntity(anime);
     }
+
+    public List<AnimeResponseDto> findAnimeByKeyword(String keyword) {
+        List<Anime> animes = animeRepository.findByTitleKrContaining(keyword);
+        return animes.stream()
+                .map(AnimeResponseDto::fromEntity)
+                .toList();
+    }
 }
