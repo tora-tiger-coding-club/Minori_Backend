@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/anime")
 @RequiredArgsConstructor
 public class AnimeController {
-
     private final AnimeService animeService;
 
     @GetMapping("/serach")
@@ -22,7 +21,7 @@ public class AnimeController {
         List<AnimeResponseDto> animeList = animeService.getAllAnimes();
         return ResponseEntity.ok(animeList);
     }
-    @GetMapping("/search/{animeId}")
+    @GetMapping("/{animeId}")
     public ResponseEntity<AnimeResponseDto> getAnimeFromAnimeId(@PathVariable Long animeId) {
         AnimeResponseDto anime = animeService.getAnimeFromAnimeId(animeId);
         return ResponseEntity.ok(anime);
