@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -33,13 +33,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         SocialType socialType = getSocialType(userRequest.getClientRegistration().getRegistrationId());
         User createdUser = getUserOrSaveIfNotPresent(authAttributes, socialType);
 
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(createdUser.getRole().getKey());
+
         return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
-                oAuth2User.getAttributes(),
-                authAttributes.getNameAttributeKey(),
                 createdUser.getUserId(),
                 createdUser.getEmail(),
-                createdUser.getRole()
+                createdUser.getEmail(),
+                createdUser.getRole(),
+                List.of(simpleGrantedAuthority),
+                oAuth2User.getAttributes()
         );
     }
 

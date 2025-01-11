@@ -3,6 +3,7 @@ package backend.minori.api.user;
 import backend.minori.api.user.dto.UserResistRequestDto;
 import backend.minori.api.user.dto.UserResponseDto;
 import backend.minori.api.user.service.UserService;
+import backend.minori.common.auth.CustomOAuth2User;
 import backend.minori.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity signupUser(UserResistRequestDto userResistRequestDto,
-                                     @AuthenticationPrincipal UserDetails user) {
+                                     @AuthenticationPrincipal CustomOAuth2User user) {
 
         return ResponseEntity.ok(user.getUsername());
     }
