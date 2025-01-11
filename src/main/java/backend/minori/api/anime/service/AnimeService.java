@@ -5,6 +5,8 @@ import backend.minori.api.anime.repository.AnimeRepository;
 import backend.minori.domain.Anime;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -16,7 +18,15 @@ public class AnimeService {
 
     public List<AnimeResponseDto> getAllAnimes() {
         List<Anime> animes = animeRepository.findAll();
+
         return animes.stream()
+                .map(AnimeResponseDto::fromEntity)
+                .toList();
+    }
+
+    public List<AnimeResponseDto> getAllAnimesWithPageable(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return animeRepository.findAll(pageable)
                 .map(AnimeResponseDto::fromEntity)
                 .toList();
     }

@@ -5,7 +5,6 @@ import backend.minori.api.anime.service.AnimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -15,10 +14,12 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping("/serach")
-    public ResponseEntity<List<AnimeResponseDto>> getAllAnimes() {
-        List<AnimeResponseDto> animeList = animeService.getAllAnimes();
+    public ResponseEntity<List<AnimeResponseDto>> getAllAnimes(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
+                                                               @RequestParam(required = false, defaultValue = "50", value = "limit") int size) {
+        List<AnimeResponseDto> animeList = animeService.getAllAnimesWithPageable(page, size);
         return ResponseEntity.ok(animeList);
     }
+
     @GetMapping("/{animeId}")
     public ResponseEntity<AnimeResponseDto> getAnimeFromAnimeId(@PathVariable Long animeId) {
         AnimeResponseDto anime = animeService.getAnimeFromAnimeId(animeId);
