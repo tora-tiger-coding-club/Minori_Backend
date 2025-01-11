@@ -16,9 +16,4 @@ public class AuthController {
     public void loginGoogle(HttpServletResponse response) throws IOException {
         response.sendRedirect("/oauth2/authorization/google");
     }
-
-    @PostMapping("/regist")
-    public ResponseEntity registUesr() {
-        return ResponseEntity.ok("");
-    }
 }

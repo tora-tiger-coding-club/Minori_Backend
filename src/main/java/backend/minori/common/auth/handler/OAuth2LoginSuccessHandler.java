@@ -33,14 +33,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void signUpGuest(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail(), oAuth2User.getUserId());
 
         jwtService.sendAccessToken(response, accessToken);
-        response.sendRedirect("/auth/register");
+        response.sendRedirect("/user/signup");
     }
 
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) {
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail(), oAuth2User.getUserId());
         String refreshToken = jwtService.createRefreshToken();
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
