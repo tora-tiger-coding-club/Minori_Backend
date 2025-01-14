@@ -15,10 +15,20 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping("/serach")
-    public ResponseEntity<List<AnimeResponseDto>> getAllAnimes(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
-                                                               @RequestParam(required = false, defaultValue = "50", value = "limit") int size) {
-        List<AnimeResponseDto> animeList = animeService.getAllAnimesWithPageable(page, size);
-        return ResponseEntity.ok(animeList);
+    public ResponseEntity<List<AnimeSearchResponseDto>> getAnimes(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
+                                                               @RequestParam(required = false, defaultValue = "50", value = "limit") int size,
+                                                               @RequestParam(required = false) String season,
+                                                               @RequestParam(required = false) String title,
+                                                               @RequestParam(required = false) String genre,
+                                                               @RequestParam(required = false) String tag) {
+
+        if (season == null && title == null && genre == null && tag == null) {
+            List<AnimeSearchResponseDto> animeList = animeService.getAllAnimesWithPageable(page, size);
+            return ResponseEntity.ok(animeList);
+        }
+
+        List<AnimeSearchResponseDto> filteredAnimeList = animeService.getFilteredAnimes(page, size, season, title, genre, tag);
+        return ResponseEntity.ok(filteredAnimeList);
     }
 
     @GetMapping("/{animeId}")

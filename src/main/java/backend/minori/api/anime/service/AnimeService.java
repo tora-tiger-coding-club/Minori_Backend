@@ -1,5 +1,6 @@
 package backend.minori.api.anime.service;
 
+import backend.minori.api.anime.AnimeSpecification;
 import backend.minori.api.anime.dto.AnimeResponseDto;
 import backend.minori.api.anime.dto.AnimeSearchResponseDto;
 import backend.minori.api.anime.repository.AnimeRepository;
@@ -8,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -17,18 +19,25 @@ import java.util.List;
 public class AnimeService {
     private final AnimeRepository animeRepository;
 
-    public List<AnimeResponseDto> getAllAnimes() {
+    public List<AnimeSearchResponseDto> getAllAnimes() {
         List<Anime> animes = animeRepository.findAll();
-
         return animes.stream()
-                .map(AnimeResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::fromEntity)
                 .toList();
     }
 
-    public List<AnimeResponseDto> getAllAnimesWithPageable(int page, int size) {
+    public List<AnimeSearchResponseDto> getAllAnimesWithPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return animeRepository.findAll(pageable)
-                .map(AnimeResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::fromEntity)
+                .toList();
+    }
+
+    public List<AnimeSearchResponseDto> getFilteredAnimes(int page, int size, String season, String title, String genre, String tag) {
+        Pageable pageable = PageRequest.of(page, size);
+        Specification<Anime> specification = AnimeSpecification.filterBy(season, title, genre, tag);
+        return animeRepository.findAll(specification, pageable)
+                .map(AnimeSearchResponseDto::fromEntity)
                 .toList();
     }
 
