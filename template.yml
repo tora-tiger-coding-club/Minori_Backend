@@ -5,9 +5,9 @@ Description: AWS Serverless Spring Boot 2 API - my.service::my-service
 Globals:
   Function:
       Timeout: 10
-      MemorySize: 512
-      # Architectures: 
-      # - arm64
+      MemorySize: 1024
+      Architectures: 
+      - arm64
   Api:
     EndpointConfiguration: REGIONAL
 Parameters:
