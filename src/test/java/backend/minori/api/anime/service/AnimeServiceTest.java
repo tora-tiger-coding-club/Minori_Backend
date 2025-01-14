@@ -1,6 +1,7 @@
 package backend.minori.api.anime.service;
 
 import backend.minori.api.anime.dto.AnimeResponseDto;
+import backend.minori.api.anime.dto.AnimeSearchResponseDto;
 import backend.minori.api.anime.repository.AnimeRepository;
 import backend.minori.domain.Anime;
 import org.junit.jupiter.api.BeforeEach;
@@ -123,7 +124,7 @@ class AnimeServiceTest {
         Mockito.when(animeRepository.findByTitleKrContaining("진격"))
                 .thenReturn(animeList.subList(1, 3));
 
-        List<AnimeResponseDto> animeList = animeService.findAnimeByKeyword("진격");
+        List<AnimeSearchResponseDto> animeList = animeService.findAnimeByKeyword("진격");
 
         assertEquals(2, animeList.size());
         assertEquals("진격의 거인", animeList.get(0).getTitleKr());

@@ -1,6 +1,7 @@
 package backend.minori.api.anime.service;
 
 import backend.minori.api.anime.dto.AnimeResponseDto;
+import backend.minori.api.anime.dto.AnimeSearchResponseDto;
 import backend.minori.api.anime.repository.AnimeRepository;
 import backend.minori.domain.Anime;
 import jakarta.transaction.Transactional;
@@ -37,10 +38,10 @@ public class AnimeService {
         return AnimeResponseDto.fromEntity(anime);
     }
 
-    public List<AnimeResponseDto> findAnimeByKeyword(String keyword) {
+    public List<AnimeSearchResponseDto> findAnimeByKeyword(String keyword) {
         List<Anime> animes = animeRepository.findByTitleKrContaining(keyword);
         return animes.stream()
-                .map(AnimeResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::fromEntity)
                 .toList();
     }
 }

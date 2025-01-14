@@ -1,6 +1,7 @@
 package backend.minori.api.anime;
 
 import backend.minori.api.anime.dto.AnimeResponseDto;
+import backend.minori.api.anime.dto.AnimeSearchResponseDto;
 import backend.minori.api.anime.service.AnimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class AnimeController {
     }
 
     @GetMapping("/keyword/{keyword}")
-    public ResponseEntity<List<AnimeResponseDto>> findAnimeByKeyword(@PathVariable String keyword) {
-        List<AnimeResponseDto> animeList = animeService.findAnimeByKeyword(keyword);
+    public ResponseEntity<List<AnimeSearchResponseDto>> findAnimeByKeyword(@PathVariable String keyword) {
+        List<AnimeSearchResponseDto> animeList = animeService.findAnimeByKeyword(keyword);
         return ResponseEntity.ok(animeList);
     }
 
