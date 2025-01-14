@@ -12,7 +12,6 @@ public class AnimationRecordMapper {
         dto.setWatchedDate(entity.getWatchedDate());
         return dto;
     }
-
     public static AnimationRecord toEntity(AnimationRecordDTO dto) {
         AnimationRecord entity = new AnimationRecord();
         entity.setId(dto.getId());
