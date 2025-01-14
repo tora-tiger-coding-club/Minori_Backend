@@ -3,10 +3,10 @@ name: Test and Deploy Workflow
 on:
   pull_request:
     branches:
-      - test
+      - ODWA-31-AWS-DEPLOY
   push:
     branches:
-      - test
+      - ODWA-31-AWS-DEPLOY
 
 jobs:
   gradle-test:
