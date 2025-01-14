@@ -8,12 +8,12 @@ on:
   pull_request:
   push:
     branches:
-      - ODWA-31-AWS-DEPLOY
+      - dev
 
 jobs:
   gradle-test:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/ODWA-31-AWS-DEPLOY'
+    if: github.ref != 'refs/heads/dev'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,7 +37,7 @@ jobs:
 
   test-and-deploy:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/ODWA-31-AWS-DEPLOY'
+    if: github.ref == 'refs/heads/dev'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
