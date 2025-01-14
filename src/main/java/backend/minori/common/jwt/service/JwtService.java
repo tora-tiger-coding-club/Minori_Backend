@@ -43,8 +43,7 @@ public class JwtService {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
-    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+
     private static final String ID_CLAIM = "id";
     private static final String EMAIL_CLAIM = "email";
     private static final String ROLE_CLAIM = "role";
@@ -55,7 +54,7 @@ public class JwtService {
     public String createAccessToken(String email, Long userId, String role) {
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
-                .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
+                .withSubject(accessHeader) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
 
                 //클레임으로는 저희는 email 하나만 사용합니다.
@@ -74,7 +73,7 @@ public class JwtService {
     public String createRefreshToken() {
         Date now = new Date();
         return JWT.create()
-                .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withSubject(refreshHeader)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(secretKey));
     }
