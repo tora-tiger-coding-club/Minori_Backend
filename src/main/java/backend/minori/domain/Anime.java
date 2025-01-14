@@ -1,12 +1,14 @@
 package backend.minori.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@NoArgsConstructor(access =  AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "anime")
 public class Anime extends BaseTimeEntity {
     @Id
