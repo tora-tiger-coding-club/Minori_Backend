@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 /**
  * DTO for {@link backend.minori.domain.User}
  */
