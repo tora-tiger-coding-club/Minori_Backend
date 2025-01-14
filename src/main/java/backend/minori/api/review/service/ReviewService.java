@@ -22,7 +22,7 @@ public class ReviewService {
     public List<ReviewResponseDto> getAnimeReviews(Long animeId) {
         List<Review> reviews = reviewRepository.findByAnimeId(animeId);
         return reviews.stream()
-                .map(this::convertToDto)
+                .map(ReviewResponseDto::of)
                 .collect(Collectors.toList());
     }
 
@@ -30,7 +30,7 @@ public class ReviewService {
     public List<ReviewResponseDto> getUserReviews(Long userId) {
         List<Review> reviews = reviewRepository.findByUserId(userId);
         return reviews.stream()
-                .map(this::convertToDto)
+                .map(ReviewResponseDto::of)
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +39,7 @@ public class ReviewService {
     public ReviewResponseDto createReview(Long animeId, Review review) {
         review.setAnimeId(animeId);
         Review savedReview = reviewRepository.save(review);
-        return convertToDto(savedReview);
+        return ReviewResponseDto.of(savedReview);
     }
 
     // 애니메이션 특정 리뷰 수정
@@ -54,7 +54,7 @@ public class ReviewService {
                 requestDto.getStar()
         );
 
-        return convertToDto(review);
+        return ReviewResponseDto.of(review);
     }
 
     // 애니메이션 특정 리뷰 삭제
@@ -69,7 +69,7 @@ public class ReviewService {
     public ReviewResponseDto shareReview(Long animeId, Long reviewId) {
         Review review = reviewRepository.findByAnimeIdAndReviewId(animeId, reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
-        return convertToDto(review);
+        return ReviewResponseDto.of(review);
     }
 
     // 애니메이션 리뷰 좋아요
@@ -79,17 +79,6 @@ public class ReviewService {
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
         review.increaseLikes();
     }
-
-    private ReviewResponseDto convertToDto(Review review) {
-        return ReviewResponseDto.builder()
-                .reviewId(review.getReviewId())
-                .userId(review.getUserId())
-                .animeId(review.getAnimeId())
-                .content(review.getContent())
-                .star(review.getStar())
-                .likes(review.getLikes())
-                .isSpoiler(review.isSpoiler())
-                .isPublic(review.isPublic())
-                .build();
-    }
 }
+
+
