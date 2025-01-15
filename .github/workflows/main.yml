@@ -56,6 +56,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+<<<<<<< HEAD
+=======
+      # - name: Install AWS CLI
+      #   run: |
+      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #     unzip awscliv2.zip
+      #     sudo ./aws/install --update
+
+      # - name: Install SAM CLI
+      #   run: |
+      #     wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+      #     unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+      #     sudo ./sam-installation/install --update
+      #     sam --version
+
+>>>>>>> b7a54d7... ODWA-31 FIX: comment out aws/sam cli installation (pre-installed?)
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
