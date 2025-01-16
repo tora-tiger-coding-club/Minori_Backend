@@ -18,17 +18,25 @@ on:
 >>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
   push:
     branches:
+<<<<<<< HEAD
       - ODWA-31-AWS-DEPLOY
 >>>>>>> da0c93c... make diff
+=======
+      - dev
+>>>>>>> a8e97d8... ODWA-31 BUILD: Set target branch to dev
 
 jobs:
   gradle-test:
     runs-on: ubuntu-latest
 <<<<<<< HEAD
+<<<<<<< HEAD
     if: github.ref != 'refs/heads/dev'
 =======
     if: github.ref != 'refs/heads/ODWA-31-AWS-DEPLOY'
 >>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
+=======
+    if: github.ref != 'refs/heads/dev'
+>>>>>>> a8e97d8... ODWA-31 BUILD: Set target branch to dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -54,6 +62,7 @@ jobs:
     runs-on: ubuntu-latest
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     if: github.ref == 'refs/heads/dev'
 =======
     if: github.ref == 'refs/heads/ODWA-31-AWS-DEPLOY'
@@ -61,6 +70,9 @@ jobs:
 =======
     if: github.event.pull_request.merged == true
 >>>>>>> def30b0... FIX: Action for the test
+=======
+    if: github.ref == 'refs/heads/dev'
+>>>>>>> a8e97d8... ODWA-31 BUILD: Set target branch to dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
