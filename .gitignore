@@ -1,10 +1,18 @@
 HELP.md
 .gradle
+
+.aws-sam/
 build/
 logs/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+# Local github action test credentials
+.secrets 
+
+# Sam build file
+.aws-sam/
 
 ### STS ###
 .apt_generated

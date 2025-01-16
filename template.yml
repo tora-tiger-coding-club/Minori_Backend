@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+# https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#sqs
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Spring Boot 2 API - my.service::my-service
+Globals:
+  Function:
+      Timeout: 10
+      MemorySize: 1024
+      Architectures: 
+      - arm64
+  Api:
+    EndpointConfiguration: REGIONAL
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: 
+        Ref: Stage
+      Variables:
+        Stage:
+          Ref: Stage
+  MinoriApiFunction:
+    Type: AWS::Serverless::Function
+    FunctionName: "MINORI_BACKEND"
+    Properties:
+      Handler: backend.minori.StreamLambdaHandler::handleRequest
+      Runtime: java21
+      CodeUri: "."
+      Policies: AWSLambdaBasicExecutionRole
+      SnapStart:
+        ApplyOn: PublishedVersions
+      Environment:
+        Variables:
+          MINORI: dev
+      Events:
+        API:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+            RestApiId: !Ref ApiGatewayApi
+Outputs:
+  MinoriApi:
+    Description: URL for application
+    Value: !Sub 'https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/'
+    Export:
+      Name: MyServiceApi
