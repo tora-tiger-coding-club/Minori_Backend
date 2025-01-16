@@ -15,11 +15,13 @@ public class EpisodeReview extends BaseTimeEntity {
   @Column(name = "episode_review_id")
   private Long episodeReviewId;
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User userId;
 
-  @Column(name = "anime_id", nullable = false)
-  private Long animeId;
+  @ManyToOne
+  @JoinColumn(name = "anime_id", nullable = false)
+  private Anime animeId;
 
   @Column(name = "content")
   private String content;
