@@ -7,12 +7,15 @@ permissions:
 on:
   pull_request:
 <<<<<<< HEAD
+<<<<<<< HEAD
   push:
     branches:
       - dev
 =======
     branches:
       - ODWA-31-AWS-DEPLOY
+=======
+>>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
   push:
     branches:
       - ODWA-31-AWS-DEPLOY
@@ -21,7 +24,11 @@ on:
 jobs:
   gradle-test:
     runs-on: ubuntu-latest
+<<<<<<< HEAD
     if: github.ref != 'refs/heads/dev'
+=======
+    if: github.ref != 'refs/heads/ODWA-31-AWS-DEPLOY'
+>>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -45,7 +52,15 @@ jobs:
 
   test-and-deploy:
     runs-on: ubuntu-latest
+<<<<<<< HEAD
+<<<<<<< HEAD
     if: github.ref == 'refs/heads/dev'
+=======
+    if: github.ref == 'refs/heads/ODWA-31-AWS-DEPLOY'
+>>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
+=======
+    if: github.event.pull_request.merged == true
+>>>>>>> def30b0... FIX: Action for the test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
