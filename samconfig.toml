@@ -4,11 +4,7 @@ stack_name = "MinoriBackDev"
 resolve_s3 = true
 s3_prefix = "MinoriBackDev"
 region = "ap-northeast-2"
-<<<<<<< HEAD
 confirm_changeset = false
-=======
-confirm_changeset = true
->>>>>>> f925592... ODWA-22 Test Done
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
 image_repositories = []
