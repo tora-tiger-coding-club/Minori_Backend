@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -48,4 +50,7 @@ public class Anime extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "seried_id")
     private Series series;
+
+    @OneToMany(targetEntity = AnimeTag.class, cascade = CascadeType.ALL)
+    private List<AnimeTag> animeTags;
 }
