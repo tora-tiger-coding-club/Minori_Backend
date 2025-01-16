@@ -44,3 +44,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.secrets
