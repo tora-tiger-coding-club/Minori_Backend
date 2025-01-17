@@ -6,6 +6,8 @@ import backend.minori.common.auth.OAuthAttributes;
 import backend.minori.domain.SocialType;
 import backend.minori.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -14,55 +16,62 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+    private static final Logger log = LoggerFactory.getLogger(CustomOAuth2UserService.class);
     private  final UserRepository userRepository;
-
-    private static final String GOOGLE =  "google";
-    private static final String NAVER =  "naver";
-    private static final String KAKAO =  "kakao";
-    private static final String TWITTER =  "twitter";
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
+        OAuth2User oAuth2User = loadOAuth2User(userRequest);
+        OAuthAttributes authAttributes = getOAuthAttributes(userRequest, oAuth2User);
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        SocialType socialType = getSocialType(registrationId);
-        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        SocialType socialType = getSocialType(userRequest.getClientRegistration().getRegistrationId());
+        User createdUser = getUserOrSaveIfNotPresent(authAttributes, socialType);
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-        OAuthAttributes authAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
-
-        User createdUser = getUser(authAttributes, socialType);
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(createdUser.getRole().getKey());
 
         return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
-                attributes,
-                authAttributes.getNameAttributeKey(),
+                createdUser.getUserId(),
                 createdUser.getEmail(),
-                createdUser.getRole()
+                createdUser.getEmail(),
+                createdUser.getRole(),
+                List.of(simpleGrantedAuthority),
+                oAuth2User.getAttributes()
         );
     }
 
-    private SocialType getSocialType(String registrationId) {
-        return SocialType.GOOGLE;
+    private OAuth2User loadOAuth2User(OAuth2UserRequest userRequest) {
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+        return delegate.loadUser(userRequest);
     }
 
-    private User getUser(OAuthAttributes authAttributes, SocialType socialType) {
+    private OAuthAttributes getOAuthAttributes(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
+                .getUserInfoEndpoint().getUserNameAttributeName();
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        SocialType socialType = getSocialType(userRequest.getClientRegistration().getRegistrationId());
+
+        return OAuthAttributes.of(socialType, userNameAttributeName, attributes);
+    }
+
+    private SocialType getSocialType(String registrationId){
+        return SocialType.fromString(registrationId);
+    }
+
+    private User getUserOrSaveIfNotPresent(OAuthAttributes authAttributes, SocialType socialType) {
         User findUser = userRepository.findBySocialTypeAndSocialId(socialType,
                 authAttributes.getOAuth2UserInfo().getId()).orElse(null);
 
         if(findUser == null) {
             return saveUser(authAttributes, socialType);
+        } else {
+            log.info(findUser.getEmail());
         }
-
         return findUser;
     }
 
