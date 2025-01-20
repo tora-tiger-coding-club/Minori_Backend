@@ -1,6 +1,3 @@
-package backend.minori.domain;
-
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
@@ -29,4 +26,7 @@ public class Record extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "anime_id", nullable = false)
     private Anime anime;
+
+    private String review;
+    private String rating;
 }
