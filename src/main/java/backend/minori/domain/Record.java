@@ -13,7 +13,10 @@ public class Record extends BaseTimeEntity {
     @Column(nullable = false, length = 10)
     private String status;
 
+    @Column
     private Integer currentEpisode;
+
+    @Column
     private LocalDate startedAt;
 
     @ManyToOne
