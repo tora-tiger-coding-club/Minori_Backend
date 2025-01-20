@@ -28,11 +28,22 @@ public class Review extends BaseTimeEntity {
     private int star;
 
     @Column(name = "likes", nullable = false)
-    private int like;
+    private int likes;
 
     @Column(name = "is_spoiler", nullable = false)
     private boolean isSpoiler;
 
     @Column(name = "is_public", nullable = false)
     private boolean isPublic;
+
+    public void updateReview(boolean isSpoiler, boolean isPublic, int star) {
+        this.isSpoiler = isSpoiler;
+        this.isPublic = isPublic;
+        this.star = star;
+    }
+
+    // 좋아요 증가를 위한 메서드
+    public void increaseLikes() {
+        this.likes += 1;
+    }
 }
