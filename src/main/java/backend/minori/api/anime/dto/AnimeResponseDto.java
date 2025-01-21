@@ -23,7 +23,7 @@ public class AnimeResponseDto {
     private String airingType;
     private String seriesName;
 
-    public static AnimeResponseDto fromEntity(Anime anime) {
+    public static AnimeResponseDto of(Anime anime) {
         return AnimeResponseDto.builder()
                 .animeId(anime.getAnimeId())
                 .titleKr(anime.getTitleKr())
