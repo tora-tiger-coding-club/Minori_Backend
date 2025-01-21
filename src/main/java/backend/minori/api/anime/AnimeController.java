@@ -23,7 +23,7 @@ public class AnimeController {
                                                                @RequestParam(required = false) String tag) {
 
         if (season == null && title == null && genre == null && tag == null) {
-            List<AnimeSearchResponseDto> animeList = animeService.getAllAnimesWithPageable(page, size);
+            List<AnimeSearchResponseDto> animeList = animeService.getAllAnimes(page, size);
             return ResponseEntity.ok(animeList);
         }
 
