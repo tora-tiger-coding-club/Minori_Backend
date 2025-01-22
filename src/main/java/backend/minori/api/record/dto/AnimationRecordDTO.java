@@ -6,7 +6,6 @@ public class AnimationRecordDTO {
     private String animationTitle;
     private String watchedDate;
 
-    // Getter 및 Setter
     public Long getId() {
         return id;
     }

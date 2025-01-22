@@ -1,9 +1,9 @@
 package backend.minori.api.record.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class AnimationRecord {
@@ -14,5 +14,4 @@ public class AnimationRecord {
     private String animationTitle;
     private String watchedDate;
 
-    // Getter 및 Setter
 }
