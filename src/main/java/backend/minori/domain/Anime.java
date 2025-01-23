@@ -1,12 +1,15 @@
 package backend.minori.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import java.util.List;
 
+@NoArgsConstructor(access =  AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "anime")
 public class Anime extends BaseTimeEntity {
     @Id
@@ -48,4 +51,7 @@ public class Anime extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "seried_id")
     private Series series;
+
+    @OneToMany(targetEntity = AnimeTag.class, cascade = CascadeType.ALL)
+    private List<AnimeTag> animeTags;
 }
