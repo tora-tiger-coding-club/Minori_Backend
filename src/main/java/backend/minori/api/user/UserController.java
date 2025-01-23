@@ -36,7 +36,8 @@ public class UserController {
         HttpServletResponse response
     ) {
         userService.signupUser(user, userSignupRequestDto);
-        
+
+        // 신규 토큰 생성
         // TODO : OAuth2LoginSuccessHandler에 있는걸 그대로 따왔는데 OAuth2LoginSuccessHandler로 보낼방법 생각하기
         String accessToken = jwtService.createAccessToken(user.getEmail(), user.getUserId(), user.getRole().getKey());
         String refreshToken = jwtService.createRefreshToken();
