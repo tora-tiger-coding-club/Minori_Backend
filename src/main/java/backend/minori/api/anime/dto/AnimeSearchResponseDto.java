@@ -14,7 +14,7 @@ public class AnimeSearchResponseDto {
     private String airingStatus;
     private String airingType;
 
-    public static AnimeSearchResponseDto fromEntity(Anime anime) {
+    public static AnimeSearchResponseDto of(Anime anime) {
         return AnimeSearchResponseDto.builder()
                 .animeId(anime.getAnimeId())
                 .titleKr(anime.getTitleKr())

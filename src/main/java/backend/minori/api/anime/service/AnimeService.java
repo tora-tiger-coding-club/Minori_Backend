@@ -22,14 +22,14 @@ public class AnimeService {
     public List<AnimeSearchResponseDto> getAllAnimes() {
         List<Anime> animes = animeRepository.findAll();
         return animes.stream()
-                .map(AnimeSearchResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::of)
                 .toList();
     }
 
     public List<AnimeSearchResponseDto> getAllAnimesWithPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return animeRepository.findAll(pageable)
-                .map(AnimeSearchResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::of)
                 .toList();
     }
 
@@ -37,20 +37,20 @@ public class AnimeService {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Anime> specification = AnimeSpecification.filterBy(season, title, genre, tag);
         return animeRepository.findAll(specification, pageable)
-                .map(AnimeSearchResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::of)
                 .toList();
     }
 
     public AnimeResponseDto getAnimeFromAnimeId(Long animeId) {
         Anime anime = animeRepository.findById(animeId)
                 .orElseThrow(() -> new IllegalArgumentException("애니메이션 정보를 찾을 수 없습니다."));
-        return AnimeResponseDto.fromEntity(anime);
+        return AnimeResponseDto.of(anime);
     }
 
     public List<AnimeSearchResponseDto> findAnimeByKeyword(String keyword) {
         List<Anime> animes = animeRepository.findByTitleKrContaining(keyword);
         return animes.stream()
-                .map(AnimeSearchResponseDto::fromEntity)
+                .map(AnimeSearchResponseDto::of)
                 .toList();
     }
 }
