@@ -5,12 +5,15 @@ import backend.minori.api.record.dto.AnimeRecordRequestDto;
 import backend.minori.api.record.dto.AnimeRecordResponseDto;
 import backend.minori.api.record.repository.AnimeRecordRepository;
 import backend.minori.api.user.repository.UserRepository;
+import backend.minori.common.auth.CustomOAuth2User;
 import backend.minori.domain.Anime;
 import backend.minori.domain.AnimeRecord;
 import backend.minori.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -21,21 +24,22 @@ public class AnimeRecordService {
     private final UserRepository userRepository;
     private final AnimeRepository animeRepository;
 
-    public List<AnimeRecordResponseDto> getAllAnimeRecordsByUserId(Long userId) {
-        List<AnimeRecord> animeRecordList = animeRecordRepository.findAllByUserId(userId);
+    public List<AnimeRecordResponseDto> getAllAnimeRecordsByUserId(CustomOAuth2User user) {
+        List<AnimeRecord> animeRecordList = animeRecordRepository.findAllByUserId(user.getUserId());
         return animeRecordList.stream()
                 .map(AnimeRecordResponseDto::of)
                 .toList();
     }
 
-    public AnimeRecordResponseDto getAnimeRecordById(Long userId, Long recordId) {
-        AnimeRecord animeRecord = animeRecordRepository.findByUserIdAndId(userId, recordId);
+    public AnimeRecordResponseDto getAnimeRecordById(CustomOAuth2User user, Long recordId) {
+        AnimeRecord animeRecord = animeRecordRepository.findByUserIdAndId(user.getUserId(), recordId)
+                .orElseThrow(() -> new IllegalIdentifierException("해당 기록을 찾을 수 없습니다."));
         return AnimeRecordResponseDto.of(animeRecord);
 
     }
 
-    public AnimeRecordResponseDto saveAnimeRecord(Long userId, AnimeRecordRequestDto request) {
-        User user = userRepository.findById(userId)
+    public AnimeRecordResponseDto saveAnimeRecord(CustomOAuth2User auth2User, AnimeRecordRequestDto request) {
+        User user = userRepository.findById(auth2User.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         Anime anime = animeRepository.findById(request.getAnimeId())
@@ -53,8 +57,8 @@ public class AnimeRecordService {
         return AnimeRecordResponseDto.of(savedAnimeRecord);
     }
 
-    public AnimeRecordResponseDto updateAnimeRecord(Long userId, Long recordId, AnimeRecordRequestDto updatedRequest) {
-        AnimeRecord animeRecord = animeRecordRepository.findById(recordId)
+    public AnimeRecordResponseDto updateAnimeRecord(CustomOAuth2User user, Long recordId, AnimeRecordRequestDto updatedRequest) {
+        AnimeRecord animeRecord = animeRecordRepository.findByUserIdAndId(user.getUserId(), recordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 기록을 찾을 수 없습니다."));
 
         AnimeRecord updatedRecord = animeRecord.update(updatedRequest);
@@ -62,8 +66,8 @@ public class AnimeRecordService {
         return AnimeRecordResponseDto.of(updatedRecord);
     }
 
-    public void deleteAnimeRecord(Long userId, Long recordId) {
-        AnimeRecord animeRecord = animeRecordRepository.findById(recordId)
+    public void deleteAnimeRecord(CustomOAuth2User user, Long recordId) {
+        AnimeRecord animeRecord = animeRecordRepository.findByUserIdAndId(user.getUserId(), recordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 기록을 찾을 수 없습니다."));
         animeRecordRepository.delete(animeRecord);
     }
