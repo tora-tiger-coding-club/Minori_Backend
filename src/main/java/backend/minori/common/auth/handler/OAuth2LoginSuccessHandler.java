@@ -36,14 +36,23 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail(), oAuth2User.getUserId(), oAuth2User.getRole().getKey());
 
         jwtService.sendAccessToken(response, accessToken);
-        response.sendRedirect("/user/signup");
+
+        String redirectUrl = "/user/signup";
+        String urlWithToken = String.format("%s?accessToken=%s", redirectUrl, accessToken);
+
+        response.sendRedirect(urlWithToken);
     }
 
-    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) {
+    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail(), oAuth2User.getUserId(), oAuth2User.getRole().getKey());
         String refreshToken = jwtService.createRefreshToken();
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+
+        String redirectUrl = "http://localhost:5173/oauth/redirect";
+        String urlWithToken = String.format("%s?accessToken=%s&refreshToken=%s", redirectUrl, accessToken, refreshToken);
+
+        response.sendRedirect(urlWithToken);
     }
 }
