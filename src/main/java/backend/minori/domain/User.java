@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access =  AccessLevel.PROTECTED)
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 @AllArgsConstructor
 // user 는 DB 에서의 예약어
@@ -55,6 +57,9 @@ public class User extends BaseTimeEntity{
 
     @OneToMany(targetEntity = Record.class)
     private List<Record> records;
+
+    @OneToMany(targetEntity = Review.class, cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;

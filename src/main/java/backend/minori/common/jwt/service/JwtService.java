@@ -1,8 +1,11 @@
 package backend.minori.common.jwt.service;
 
 import backend.minori.api.user.repository.UserRepository;
+import backend.minori.common.auth.CustomOAuth2User;
+import backend.minori.domain.Role;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -10,10 +13,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,23 +43,26 @@ public class JwtService {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
-    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+
+    private static final String ID_CLAIM = "id";
     private static final String EMAIL_CLAIM = "email";
+    private static final String ROLE_CLAIM = "role";
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(String email, Long userId, String role) {
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
-                .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
+                .withSubject(accessHeader) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
 
                 //클레임으로는 저희는 email 하나만 사용합니다.
                 //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
                 //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
+                .withClaim(ID_CLAIM, userId)
                 .withClaim(EMAIL_CLAIM, email)
+                .withClaim(ROLE_CLAIM, role)
                 .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
     }
 
@@ -64,7 +73,7 @@ public class JwtService {
     public String createRefreshToken() {
         Date now = new Date();
         return JWT.create()
-                .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withSubject(refreshHeader)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(secretKey));
     }
@@ -75,8 +84,8 @@ public class JwtService {
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        response.setHeader(accessHeader, accessToken);
-        log.info("재발급된 Access Token : {}", accessToken);
+        setAccessTokenHeader(response, accessToken);
+        log.info("제발급된 Access Token : {}", accessToken);
     }
 
     /**
@@ -133,18 +142,35 @@ public class JwtService {
         }
     }
 
+
+    public Optional<String> extractUserId(String accessToken) {
+        try {
+            // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+                    .build() // 반환된 빌더로 JWT verifier 생성
+                    .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
+                    .getClaim(ID_CLAIM) // claim(Emial) 가져오기
+                    .asString());
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
+        }
+    }
+
+
+
     /**
      * AccessToken 헤더 설정
      */
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
+        response.setHeader(accessHeader, BEARER + accessToken);
     }
 
     /**
      * RefreshToken 헤더 설정
      */
     public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
+        response.setHeader(refreshHeader, BEARER + refreshToken);
     }
 
     /**
@@ -166,5 +192,30 @@ public class JwtService {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
+    }
+
+
+    public Authentication getAuthentication(String accessToken) {
+        Map<String, Claim> claims = JWT.require(Algorithm.HMAC512(secretKey))
+                .build()
+                .verify(accessToken)
+                .getClaims();
+
+        List<String> authorities = Arrays.asList(claims.get(ROLE_CLAIM).toString().split(","));
+
+        List<? extends GrantedAuthority> simpleGrantedAuthorities = authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
+        CustomOAuth2User user = new CustomOAuth2User(
+                claims.get(ID_CLAIM).asLong(),
+                claims.get(EMAIL_CLAIM).asString(),
+                claims.get(EMAIL_CLAIM).asString(),
+                Role.fromString(claims.get(ROLE_CLAIM).asString()),
+                simpleGrantedAuthorities,
+                Map.of()
+        );
+
+        return new UsernamePasswordAuthenticationToken(user, accessToken, simpleGrantedAuthorities);
     }
 }
