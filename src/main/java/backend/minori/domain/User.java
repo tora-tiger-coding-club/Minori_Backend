@@ -61,4 +61,11 @@ public class User extends BaseTimeEntity{
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    public void signupUser(String username, String introduce) {
+        this.role = Role.USER;
+        this.username = username;
+        this.introduce = introduce;
+        this.isPublic = true;
+    }
 }
