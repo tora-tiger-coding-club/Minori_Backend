@@ -16,7 +16,7 @@ public class AnimeSearchResponseDto {
 
     public static AnimeSearchResponseDto of(Anime anime) {
         return AnimeSearchResponseDto.builder()
-                .animeId(anime.getAnimeId())
+                .animeId(anime.getId())
                 .titleKr(anime.getTitleKr())
                 .airingStatus(anime.getAiringStatus())
                 .airingType(anime.getAiringType())

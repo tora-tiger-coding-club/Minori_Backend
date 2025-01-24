@@ -10,13 +10,13 @@ import lombok.Setter;
 public class AnimeGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long TagId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Anime AnimeId;
+    private Anime anime;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Genre GenreId;
+    private Genre genre;
 }

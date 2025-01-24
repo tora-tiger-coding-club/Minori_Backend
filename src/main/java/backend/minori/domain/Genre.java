@@ -11,7 +11,7 @@ import java.util.List;
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long GenreId;
+    private Long id;
 
     @Column(nullable = false, length = 30)
     private String name;

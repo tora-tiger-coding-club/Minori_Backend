@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class AnimeRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long recordId;
+    private Long id;
 
     @Column(nullable = false, length = 10)
     private String status;
@@ -35,7 +35,7 @@ public class AnimeRecord {
 
     public AnimeRecord update(AnimeRecordRequestDto updatedRequest) {
         return AnimeRecord.builder()
-                .recordId(this.recordId)
+                .id(this.id)
                 .status(updatedRequest.getStatus())
                 .currentEpisode(updatedRequest.getCurrentEpisode())
                 .startedAt(this.startedAt)
