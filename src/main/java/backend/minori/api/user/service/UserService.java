@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,12 +32,10 @@ public class UserService {
             throw new IllegalArgumentException("이미 회원 가입이 된 회원입니다.");
         }
 
-        userRepository.save(User.builder()
-                .userId(user.getUserId())
-                .role(Role.USER)
-                .username(signupRequest.getUsername())
-                .introduce(signupRequest.getIntroduce())
-                .isPublic(true)
-                .build());
+        User userEntity = userRepository.findById(user.getUserId()).get();
+
+        userEntity.signupUser(signupRequest.getUsername(), signupRequest.getIntroduce());
+
+        userRepository.save(userEntity);
     }
 }

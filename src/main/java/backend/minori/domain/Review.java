@@ -20,8 +20,9 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "anime_id", nullable = false)
-    private Long animeId;
+    @ManyToOne
+    @JoinColumn(name = "anime_id", nullable = false)
+    private Anime animeId;
 
     @Column(name = "content")
     private String content;

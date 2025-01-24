@@ -58,7 +58,17 @@ public class User extends BaseTimeEntity{
     @OneToMany(targetEntity = Record.class)
     private List<Record> records;
 
+    @OneToMany(targetEntity = Review.class, cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void signupUser(String username, String introduce) {
+        this.role = Role.USER;
+        this.username = username;
+        this.introduce = introduce;
+        this.isPublic = true;
     }
 }
