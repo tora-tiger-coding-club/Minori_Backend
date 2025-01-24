@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<Void> signupUser(@AuthenticationPrincipal CustomOAuth2User user,
-        UserSignupRequestDto userSignupRequestDto,
+        @RequestBody UserSignupRequestDto userSignupRequestDto,
         HttpServletResponse response
     ) {
         userService.signupUser(user, userSignupRequestDto);
