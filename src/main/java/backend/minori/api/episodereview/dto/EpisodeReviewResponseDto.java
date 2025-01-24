@@ -22,7 +22,7 @@ public class EpisodeReviewResponseDto {
     public static EpisodeReviewResponseDto of(EpisodeReview review) {
         return EpisodeReviewResponseDto.builder()
                 .episodeReviewId(review.getEpisodeReviewId())
-                .userId(review.getUserId())
+                .userId(review.getUser().getUserId())
                 .animeId(review.getAnimeId())
                 .content(review.getContent())
                 .star(review.getStar())
