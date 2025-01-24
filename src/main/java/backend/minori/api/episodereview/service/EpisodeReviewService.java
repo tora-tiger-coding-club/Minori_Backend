@@ -1,10 +1,12 @@
 package backend.minori.api.episodereview.service;
 
+import backend.minori.api.anime.repository.AnimeRepository;
 import backend.minori.api.episodereview.dto.EpisodeReviewResponseDto;
 import backend.minori.api.episodereview.dto.EpisodeReviewUpdateRequestDto;
 import backend.minori.api.episodereview.repository.EpisodeReviewRepository;
 import backend.minori.api.user.repository.UserRepository;
 import backend.minori.common.auth.CustomOAuth2User;
+import backend.minori.domain.Anime;
 import backend.minori.domain.EpisodeReview;
 import backend.minori.domain.Role;
 import backend.minori.domain.User;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class EpisodeReviewService {
     private final EpisodeReviewRepository episodeReviewRepository;
     private final UserRepository userRepository;
+    private final AnimeRepository animeRepository;
 
     public List<EpisodeReviewResponseDto> getPublicEpisodeReviews(Long animeId) {
         return episodeReviewRepository.findByAnimeIdAndIsPublicTrue(animeId)
@@ -51,9 +54,12 @@ public class EpisodeReviewService {
         User user = userRepository.findById(customUser.getUserId())
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
+        Anime anime = animeRepository.findById(animeId)
+                .orElseThrow(() -> new IllegalStateException("Anime not found"));
+
         EpisodeReview review = EpisodeReview.builder()
                 .user(user)
-                .animeId(animeId)
+                .anime(anime)
                 .content(reviewRequest.getContent())
                 .star(reviewRequest.getStar())
                 .isPublic(reviewRequest.isPublic())
@@ -121,7 +127,7 @@ public class EpisodeReviewService {
     }
 
     private void validateEpisodeReviewCreation(EpisodeReview review) {
-        if (episodeReviewRepository.existsByAnimeIdAndUserAndEpisode(review.getAnimeId(), review.getUser(), review.getEpisode())) {
+        if (episodeReviewRepository.existsByAnimeIdAndUserAndEpisode(review.getAnime().getAnimeId(), review.getUser(), review.getEpisode())) {
             throw new IllegalArgumentException("이미 작성한 에피소드 리뷰가 존재합니다.");
         }
     }
@@ -133,7 +139,7 @@ public class EpisodeReviewService {
     }
 
     private void validateAnimeEpisodeReview(EpisodeReview review, Long animeId) {
-        if (!review.getAnimeId().equals(animeId)) {
+        if (!review.getAnime().getAnimeId().equals(animeId)) {
             throw new IllegalArgumentException("해당 애니메이션의 에피소드 리뷰가 아닙니다.");
         }
     }

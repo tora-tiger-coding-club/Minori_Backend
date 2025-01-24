@@ -22,7 +22,7 @@ public class Review extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "anime_id", nullable = false)
-    private Anime animeId;
+    private Anime anime;
 
     @Column(name = "content")
     private String content;
