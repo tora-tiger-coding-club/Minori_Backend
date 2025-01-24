@@ -10,13 +10,13 @@ import lombok.Setter;
 public class AnimeTag {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long AnimeTagId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn
-    private Anime AnimeId;
+    private Anime anime;
 
     @ManyToOne
     @JoinColumn
-    private Tag TagId;
+    private Tag tag;
 }

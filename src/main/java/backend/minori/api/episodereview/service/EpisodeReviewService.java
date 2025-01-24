@@ -77,7 +77,7 @@ public class EpisodeReviewService {
     public EpisodeReviewResponseDto updateEpisodeReview(Long userId, Long animeId, Long episodeReviewId,
                                                         EpisodeReviewUpdateRequestDto requestDto,
                                                         CustomOAuth2User customUser) {
-        EpisodeReview review = episodeReviewRepository.findByAnimeIdAndEpisodeReviewId(animeId, episodeReviewId)
+        EpisodeReview review = episodeReviewRepository.findByAnimeIdAndId(animeId, episodeReviewId)
                 .orElseThrow(() -> new EntityNotFoundException("에피소드 리뷰를 찾을 수 없습니다."));
 
         validateEpisodeReviewOwnership(review, userId);
@@ -95,7 +95,7 @@ public class EpisodeReviewService {
 
     @Transactional
     public void deleteEpisodeReview(Long userId, Long animeId, Long episodeReviewId) {
-        EpisodeReview review = episodeReviewRepository.findByAnimeIdAndEpisodeReviewId(animeId, episodeReviewId)
+        EpisodeReview review = episodeReviewRepository.findByAnimeIdAndId(animeId, episodeReviewId)
                 .orElseThrow(() -> new EntityNotFoundException("에피소드 리뷰를 찾을 수 없습니다."));
 
         validateEpisodeReviewOwnership(review, userId);
@@ -114,32 +114,32 @@ public class EpisodeReviewService {
     }
 
     public EpisodeReviewResponseDto shareEpisodeReview(Long animeId, Long episodeReviewId) {
-        EpisodeReview review = episodeReviewRepository.findByEpisodeReviewIdAndAnimeIdAndIsPublicTrue(episodeReviewId, animeId)
+        EpisodeReview review = episodeReviewRepository.findByIdAndAnimeIdAndIsPublicTrue(episodeReviewId, animeId)
                 .orElseThrow(() -> new EntityNotFoundException("공개된 에피소드 리뷰를 찾을 수 없습니다."));
         return EpisodeReviewResponseDto.of(review);
     }
 
     @Transactional
     public void likeEpisodeReview(Long animeId, Long episodeReviewId) {
-        EpisodeReview review = episodeReviewRepository.findByAnimeIdAndEpisodeReviewId(animeId, episodeReviewId)
+        EpisodeReview review = episodeReviewRepository.findByAnimeIdAndId(animeId, episodeReviewId)
                 .orElseThrow(() -> new EntityNotFoundException("에피소드 리뷰를 찾을 수 없습니다."));
         review.increaseLikes();
     }
 
     private void validateEpisodeReviewCreation(EpisodeReview review) {
-        if (episodeReviewRepository.existsByAnimeIdAndUserAndEpisode(review.getAnime().getAnimeId(), review.getUser(), review.getEpisode())) {
+        if (episodeReviewRepository.existsByAnimeIdAndUserAndEpisode(review.getAnime().getId(), review.getUser(), review.getEpisode())) {
             throw new IllegalArgumentException("이미 작성한 에피소드 리뷰가 존재합니다.");
         }
     }
 
     private void validateEpisodeReviewOwnership(EpisodeReview review, Long userId) {
-        if (!review.getUser().getUserId().equals(userId)) {
+        if (!review.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("에피소드 리뷰에 대한 권한이 없습니다.");
         }
     }
 
     private void validateAnimeEpisodeReview(EpisodeReview review, Long animeId) {
-        if (!review.getAnime().getAnimeId().equals(animeId)) {
+        if (!review.getAnime().getId().equals(animeId)) {
             throw new IllegalArgumentException("해당 애니메이션의 에피소드 리뷰가 아닙니다.");
         }
     }

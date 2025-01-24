@@ -14,8 +14,7 @@ public class EpisodeReview extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  @Column(name = "episode_review_id")
-  private Long episodeReviewId;
+  private Long id;
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)

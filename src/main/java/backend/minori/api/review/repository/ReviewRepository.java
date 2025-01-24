@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByAnimeIdAndIsPublicTrue(Long animeId);
-    Optional<Review> findByReviewIdAndAnimeIdAndIsPublicTrue(Long reviewId, Long animeId);
-    Optional<Review> findByReviewIdAndAnimeId(Long reviewId, Long animeId);
+    Optional<Review> findByIdAndAnimeIdAndIsPublicTrue(Long id, Long animeId);
+    Optional<Review> findByIdAndAnimeId(Long id, Long animeId);
     List<Review> findByAnimeId(Long animeId);
     List<Review> findByUserAndIsPublicTrue(User user);
     boolean existsByAnimeIdAndUser(Long animeId, User user);

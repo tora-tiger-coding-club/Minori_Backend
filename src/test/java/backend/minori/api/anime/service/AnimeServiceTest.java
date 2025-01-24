@@ -37,7 +37,7 @@ class AnimeServiceTest {
     void setUp() {
         animeList = List.of(
                 Anime.builder()
-                        .animeId(1L)
+                        .id(1L)
                         .titleKr("나루토")
                         .titleEn("Naruto")
                         .titleJp("ナルト")
@@ -52,7 +52,7 @@ class AnimeServiceTest {
                         .build(),
 
                 Anime.builder()
-                        .animeId(2L)
+                        .id(2L)
                         .titleKr("진격의 거인")
                         .titleEn("Attack on Titan")
                         .titleJp("進撃の巨人")
@@ -67,7 +67,7 @@ class AnimeServiceTest {
                         .build(),
 
                 Anime.builder()
-                        .animeId(3L)
+                        .id(3L)
                         .titleKr("진격의 거인 시즌2")
                         .titleEn("Attack on Titan Season2")
                         .titleJp("進撃の巨人 Season2")

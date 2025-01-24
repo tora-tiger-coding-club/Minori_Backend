@@ -21,9 +21,9 @@ public class ReviewResponseDto {
 
     public static ReviewResponseDto of(Review review) {
         return ReviewResponseDto.builder()
-                .reviewId(review.getReviewId())
-                .userId(review.getUser().getUserId())
-                .animeId(review.getAnime().getAnimeId())
+                .reviewId(review.getId())
+                .userId(review.getUser().getId())
+                .animeId(review.getAnime().getId())
                 .content(review.getContent())
                 .star(review.getStar())
                 .likes(review.getLikes())
@@ -35,9 +35,9 @@ public class ReviewResponseDto {
     // 로그인과 인증을 위한 새로운 메소드 추가
     public static ReviewResponseDto of(Review review, CustomOAuth2User user) {
         return ReviewResponseDto.builder()
-                .reviewId(review.getReviewId())
-                .userId(review.getUser().getUserId())
-                .animeId(review.getAnime().getAnimeId())
+                .reviewId(review.getId())
+                .userId(review.getUser().getId())
+                .animeId(review.getAnime().getId())
                 .content(review.getContent())
                 .star(review.getStar())
                 .likes(review.getLikes())

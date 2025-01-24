@@ -13,7 +13,7 @@ public interface EpisodeReviewRepository extends JpaRepository<EpisodeReview, Lo
     List<EpisodeReview> findByAnimeIdAndIsPublicTrue(Long animeId);
     List<EpisodeReview> findByAnimeId(Long animeId);
     List<EpisodeReview> findByUserAndIsPublicTrue(User user);
-    Optional<EpisodeReview> findByAnimeIdAndEpisodeReviewId(Long animeId, Long episodeReviewId);
-    Optional<EpisodeReview> findByEpisodeReviewIdAndAnimeIdAndIsPublicTrue(Long episodeReviewId, Long animeId);
+    Optional<EpisodeReview> findByAnimeIdAndId (Long animeId, Long id);
+    Optional<EpisodeReview> findByIdAndAnimeIdAndIsPublicTrue(Long id, Long animeId);
     boolean existsByAnimeIdAndUserAndEpisode(Long animeId, User user, int episode);
 }
