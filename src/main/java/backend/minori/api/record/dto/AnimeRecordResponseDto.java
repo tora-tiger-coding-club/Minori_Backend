@@ -19,9 +19,9 @@ public class AnimeRecordResponseDto {
 
     public static AnimeRecordResponseDto of(AnimeRecord animeRecord) {
         return AnimeRecordResponseDto.builder()
-                .recordId(animeRecord.getRecordId())
-                .userId(animeRecord.getUser().getUserId())
-                .animeId(animeRecord.getAnime().getAnimeId())
+                .recordId(animeRecord.getId())
+                .userId(animeRecord.getUser().getId())
+                .animeId(animeRecord.getAnime().getId())
                 .status(animeRecord.getStatus())
                 .currentEpisode(animeRecord.getCurrentEpisode())
                 .startedAt(animeRecord.getStartedAt())

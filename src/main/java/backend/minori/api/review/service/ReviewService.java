@@ -113,31 +113,31 @@ public class ReviewService {
     }
 
     public ReviewResponseDto shareReview(Long animeId, Long reviewId) {
-        Review review = reviewRepository.findByReviewIdAndAnimeIdAndIsPublicTrue(reviewId, animeId)
+        Review review = reviewRepository.findByIdAndAnimeIdAndIsPublicTrue(reviewId, animeId)
                 .orElseThrow(() -> new IllegalArgumentException("공개된 리뷰를 찾을 수 없습니다."));
         return ReviewResponseDto.of(review);
     }
 
     public void likeReview(Long animeId, Long reviewId) {
-        Review review = reviewRepository.findByReviewIdAndAnimeId(reviewId, animeId)
+        Review review = reviewRepository.findByIdAndAnimeId(reviewId, animeId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
         review.increaseLikes();
     }
 
     private void validateReviewCreation(Review review) {
-        if (reviewRepository.existsByAnimeIdAndUser(review.getAnime().getAnimeId(), review.getUser())) {
+        if (reviewRepository.existsByAnimeIdAndUser(review.getAnime().getId(), review.getUser())) {
             throw new IllegalArgumentException("이미 작성한 리뷰가 존재합니다.");
         }
     }
 
     private void validateReviewOwnership(Review review, Long userId) {
-        if (!review.getUser().getUserId().equals(userId)) {
+        if (!review.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("리뷰에 대한 권한이 없습니다.");
         }
     }
 
     private void validateAnimeReview(Review review, Long animeId) {
-        if (!review.getAnime().getAnimeId().equals(animeId)) {
+        if (!review.getAnime().getId().equals(animeId)) {
             throw new IllegalArgumentException("해당 애니메이션의 리뷰가 아닙니다.");
         }
     }

@@ -12,7 +12,7 @@ import java.util.List;
 public class Series {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long seriesId;
+    private long id;
 
     @Column(nullable = false, length = 100)
     private String name;
