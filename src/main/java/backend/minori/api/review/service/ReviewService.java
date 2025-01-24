@@ -1,11 +1,13 @@
 package backend.minori.api.review.service;
 
+import backend.minori.api.anime.repository.AnimeRepository;
 import backend.minori.api.review.dto.ReviewResponseDto;
 import backend.minori.api.review.dto.ReviewUpdateRequestDto;
 import backend.minori.api.review.repository.ReviewRepository;
 import backend.minori.api.user.repository.UserRepository;
 import backend.minori.common.auth.CustomOAuth2User;
 import backend.minori.common.jwt.service.JwtService;
+import backend.minori.domain.Anime;
 import backend.minori.domain.Review;
 import backend.minori.domain.Role;
 import backend.minori.domain.User;
@@ -23,6 +25,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AnimeRepository animeRepository;
 
     public List<ReviewResponseDto> getPublicAnimeReviews(Long animeId) {
         return reviewRepository.findByAnimeIdAndIsPublicTrue(animeId)
@@ -52,9 +55,12 @@ public class ReviewService {
         User user = userRepository.findById(customUser.getUserId())
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
+        Anime anime = animeRepository.findById(animeId)
+                .orElseThrow(() -> new IllegalStateException("Anime not found"));
+
         Review review = Review.builder()
                 .user(user)
-                .animeId(animeId)
+                .anime(anime)
                 .content(reviewRequest.getContent())
                 .star(reviewRequest.getStar())
                 .isPublic(reviewRequest.isPublic())
@@ -119,7 +125,7 @@ public class ReviewService {
     }
 
     private void validateReviewCreation(Review review) {
-        if (reviewRepository.existsByAnimeIdAndUser(review.getAnimeId(), review.getUser())) {
+        if (reviewRepository.existsByAnimeIdAndUser(review.getAnime().getAnimeId(), review.getUser())) {
             throw new IllegalArgumentException("이미 작성한 리뷰가 존재합니다.");
         }
     }
@@ -131,7 +137,7 @@ public class ReviewService {
     }
 
     private void validateAnimeReview(Review review, Long animeId) {
-        if (!review.getAnimeId().equals(animeId)) {
+        if (!review.getAnime().getAnimeId().equals(animeId)) {
             throw new IllegalArgumentException("해당 애니메이션의 리뷰가 아닙니다.");
         }
     }
