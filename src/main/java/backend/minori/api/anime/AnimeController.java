@@ -42,7 +42,6 @@ public class AnimeController {
         List<AnimeSearchResponseDto> animeList = animeService.findAnimeByKeyword(keyword);
         return ResponseEntity.ok(animeList);
     }
-
 //    @GetMapping("/season")
 //    public ResponseEntity<> sans() {
 //        return ResponseEntity.ok(new MessageDto("hi"));
