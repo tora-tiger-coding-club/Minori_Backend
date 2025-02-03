@@ -14,7 +14,7 @@ import java.util.List;
 public class AnimeController {
     private final AnimeService animeService;
 
-    @GetMapping("/serach")
+    @GetMapping("/search")
     public ResponseEntity<List<AnimeSearchResponseDto>> getAnimes(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
                                                                @RequestParam(required = false, defaultValue = "50", value = "limit") int size,
                                                                @RequestParam(required = false) String season,
@@ -23,7 +23,7 @@ public class AnimeController {
                                                                @RequestParam(required = false) String tag) {
 
         if (season == null && title == null && genre == null && tag == null) {
-            List<AnimeSearchResponseDto> animeList = animeService.getAllAnimesWithPageable(page, size);
+            List<AnimeSearchResponseDto> animeList = animeService.getAllAnimes(page, size);
             return ResponseEntity.ok(animeList);
         }
 
