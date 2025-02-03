@@ -2,6 +2,7 @@ package backend.minori.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor(access =  AccessLevel.PROTECTED)
@@ -48,8 +49,10 @@ public class Anime extends BaseTimeEntity {
     @Column(length = 10)
     private String airingType;
 
+    private LocalDate airingStartedAt;
+
     @ManyToOne
-    @JoinColumn(name = "seried_id")
+    @JoinColumn(name = "series_id")
     private Series series;
 
     @OneToMany(targetEntity = AnimeTag.class, cascade = CascadeType.ALL)
