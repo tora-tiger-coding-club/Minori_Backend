@@ -31,7 +31,7 @@ public class AnimeController {
         return ResponseEntity.ok(filteredAnimeList);
     }
 
-    @GetMapping("/{animeId}")
+    @GetMapping("/{animeId:[0-9]+}")
     public ResponseEntity<AnimeResponseDto> getAnimeFromAnimeId(@PathVariable Long animeId) {
         AnimeResponseDto anime = animeService.getAnimeFromAnimeId(animeId);
         return ResponseEntity.ok(anime);
