@@ -17,37 +17,37 @@ import java.util.List;
 public class AnimeRecordController {
     private final AnimeRecordService animeRecordService;
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<AnimeRecordResponseDto>> getAnimeRecords(@AuthenticationPrincipal CustomOAuth2User user) {
         List<AnimeRecordResponseDto> responses = animeRecordService.getAllAnimeRecordsByUserId(user);
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/{user_id}")
+    @PostMapping("/{userId}")
     public ResponseEntity<AnimeRecordResponseDto> addAnimeRecord(@AuthenticationPrincipal CustomOAuth2User user,
                                                                  @RequestBody AnimeRecordRequestDto request) {
         AnimeRecordResponseDto response = animeRecordService.saveAnimeRecord(user, request);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{user_id}/{record_id}")
+    @GetMapping("/{userId}/{recordId}")
     public ResponseEntity<AnimeRecordResponseDto> getAnimeRecordById(@AuthenticationPrincipal CustomOAuth2User user,
-                                                                     @PathVariable("record_id") Long recordId) {
+                                                                     @PathVariable("recordId") Long recordId) {
         AnimeRecordResponseDto response = animeRecordService.getAnimeRecordById(user, recordId);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{user_id}/{record_id}")
+    @PatchMapping("/{userId}/{recordId}")
     public ResponseEntity<AnimeRecordResponseDto> updateAnimeRecord(@AuthenticationPrincipal CustomOAuth2User user,
-                                                                    @PathVariable("record_id") Long recordId,
+                                                                    @PathVariable("recordId") Long recordId,
                                                                     @RequestBody AnimeRecordRequestDto updatedRequest) {
         AnimeRecordResponseDto response = animeRecordService.updateAnimeRecord(user, recordId, updatedRequest);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{user_id}/{record_id}")
+    @DeleteMapping("/{userId}/{recordId}")
     public ResponseEntity<Void> deleteAnimeRecord(@AuthenticationPrincipal CustomOAuth2User user,
-                                                                    @PathVariable("record_id") Long recordId) {
+                                                                    @PathVariable("recordId") Long recordId) {
         animeRecordService.deleteAnimeRecord(user, recordId);
         return ResponseEntity.ok().build();
     }
