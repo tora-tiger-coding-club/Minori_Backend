@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeService {
     private final AnimeRepository animeRepository;
+
     public List<AnimeSearchResponseDto> getAllAnimes(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return animeRepository.findAll(pageable)

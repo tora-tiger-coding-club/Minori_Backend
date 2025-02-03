@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeController {
     private final AnimeService animeService;
+
     @GetMapping("/search")
     public ResponseEntity<List<AnimeSearchResponseDto>> getAnimes(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
                                                                @RequestParam(required = false, defaultValue = "50", value = "limit") int size,
@@ -41,7 +42,6 @@ public class AnimeController {
         List<AnimeSearchResponseDto> animeList = animeService.findAnimeByKeyword(keyword);
         return ResponseEntity.ok(animeList);
     }
-
 //    @GetMapping("/season")
 //    public ResponseEntity<> sans() {
 //        return ResponseEntity.ok(new MessageDto("hi"));
