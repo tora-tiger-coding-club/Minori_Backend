@@ -20,7 +20,7 @@ import java.util.List;
 public class User extends BaseTimeEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long userId;
+    private Long id;
 
     @Column(nullable = false, length = 50)
     private String username;
@@ -55,13 +55,20 @@ public class User extends BaseTimeEntity{
     @Column
     private String refreshToken;
 
-    @OneToMany(targetEntity = Record.class)
-    private List<Record> records;
+    @OneToMany(targetEntity = AnimeRecord.class)
+    private List<AnimeRecord> records;
 
     @OneToMany(targetEntity = Review.class, cascade = CascadeType.ALL)
     private List<Review> reviews;
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void signupUser(String username, String introduce) {
+        this.role = Role.USER;
+        this.username = username;
+        this.introduce = introduce;
+        this.isPublic = true;
     }
 }

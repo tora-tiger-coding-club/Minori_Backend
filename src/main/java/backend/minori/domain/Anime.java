@@ -2,6 +2,7 @@ package backend.minori.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor(access =  AccessLevel.PROTECTED)
@@ -14,7 +15,7 @@ import java.util.List;
 public class Anime extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long animeId;
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String titleKr;
@@ -48,8 +49,10 @@ public class Anime extends BaseTimeEntity {
     @Column(length = 10)
     private String airingType;
 
+    private LocalDate airingStartedAt;
+
     @ManyToOne
-    @JoinColumn(name = "seried_id")
+    @JoinColumn(name = "series_id")
     private Series series;
 
     @OneToMany(targetEntity = AnimeTag.class, cascade = CascadeType.ALL)

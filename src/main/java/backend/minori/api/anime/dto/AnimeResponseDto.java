@@ -25,7 +25,7 @@ public class AnimeResponseDto {
 
     public static AnimeResponseDto of(Anime anime) {
         return AnimeResponseDto.builder()
-                .animeId(anime.getAnimeId())
+                .animeId(anime.getId())
                 .titleKr(anime.getTitleKr())
                 .titleEn(anime.getTitleEn())
                 .titleJp(anime.getTitleJp())

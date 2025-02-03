@@ -37,7 +37,7 @@ class AnimeServiceTest {
     void setUp() {
         animeList = List.of(
                 Anime.builder()
-                        .animeId(1L)
+                        .id(1L)
                         .titleKr("나루토")
                         .titleEn("Naruto")
                         .titleJp("ナルト")
@@ -52,7 +52,7 @@ class AnimeServiceTest {
                         .build(),
 
                 Anime.builder()
-                        .animeId(2L)
+                        .id(2L)
                         .titleKr("진격의 거인")
                         .titleEn("Attack on Titan")
                         .titleJp("進撃の巨人")
@@ -67,7 +67,7 @@ class AnimeServiceTest {
                         .build(),
 
                 Anime.builder()
-                        .animeId(3L)
+                        .id(3L)
                         .titleKr("진격의 거인 시즌2")
                         .titleEn("Attack on Titan Season2")
                         .titleJp("進撃の巨人 Season2")
@@ -83,28 +83,14 @@ class AnimeServiceTest {
         );
     }
 
-
-    @DisplayName("전체 애니메이션 조회")
-    @Test
-    void getAllAnimesTest() {
-        Mockito.when(animeRepository.findAll()).thenReturn(animeList);
-
-        List<AnimeSearchResponseDto> animeList = animeService.getAllAnimes();
-
-        assertEquals(3, animeList.size());
-        assertEquals("나루토", animeList.get(0).getTitleKr());
-        assertEquals("진격의 거인", animeList.get(1).getTitleKr());
-        assertEquals("진격의 거인 시즌2", animeList.get(2).getTitleKr());
-    }
-
     @DisplayName("페이지네이션 적용 애니메이션 조회")
     @Test
-    void getAllAnimesWithPageableTest() {
+    void getAllAnimesTest() {
         Pageable pageable = PageRequest.of(0, 2);
         PageImpl<Anime> pageResult = new PageImpl<>(animeList.subList(0, 2), pageable, animeList.size());
         Mockito.when(animeRepository.findAll(pageable)).thenReturn(pageResult);
 
-        List<AnimeSearchResponseDto> animeList = animeService.getAllAnimesWithPageable(0, 2);
+        List<AnimeSearchResponseDto> animeList = animeService.getAllAnimes(0, 2);
 
         assertEquals(2, animeList.size());
         assertEquals("나루토", animeList.get(0).getTitleKr());

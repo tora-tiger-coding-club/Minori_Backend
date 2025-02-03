@@ -3,9 +3,11 @@ package backend.minori.api.review;
 import backend.minori.api.review.dto.ReviewResponseDto;
 import backend.minori.api.review.dto.ReviewUpdateRequestDto;
 import backend.minori.api.review.service.ReviewService;
+import backend.minori.common.auth.CustomOAuth2User;
 import backend.minori.domain.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,50 +16,54 @@ import java.util.List;
 @RequestMapping("/api/review/anime")
 @RequiredArgsConstructor
 public class ReviewController {
-
     private final ReviewService reviewService;
 
-    // 애니메이션 전체 리뷰 목록 조회
+    @GetMapping("/{anime_id}/public")
+    public ResponseEntity<List<ReviewResponseDto>> getPublicAnimeReviews(
+            @PathVariable("anime_id") Long animeId) {
+        return ResponseEntity.ok(reviewService.getPublicAnimeReviews(animeId));
+    }
+
     @GetMapping("/{anime_id}")
     public ResponseEntity<List<ReviewResponseDto>> getAnimeReviews(
+            @AuthenticationPrincipal CustomOAuth2User user,
             @PathVariable("anime_id") Long animeId) {
-        return ResponseEntity.ok(reviewService.getAnimeReviews(animeId));
+        return ResponseEntity.ok(reviewService.getAnimeReviews(animeId, user));
     }
 
-    // 애니메이션 리뷰 작성
     @PostMapping("/{anime_id}")
     public ResponseEntity<ReviewResponseDto> createReview(
+            @AuthenticationPrincipal CustomOAuth2User customUser,
             @PathVariable("anime_id") Long animeId,
-            @RequestBody Review review) {
-        return ResponseEntity.ok(reviewService.createReview(animeId, review));
+            @RequestBody Review reviewRequest) {
+        return ResponseEntity.ok(reviewService.createReview(animeId, reviewRequest, customUser));
     }
 
-    // 애니메이션 리뷰 수정
-    @PatchMapping("/{anime_id}/{review_id}")
+    @PutMapping("/{anime_id}/{review_id}")
     public ResponseEntity<ReviewResponseDto> updateReview(
+            @AuthenticationPrincipal CustomOAuth2User customUser,
             @PathVariable("anime_id") Long animeId,
             @PathVariable("review_id") Long reviewId,
             @RequestBody ReviewUpdateRequestDto requestDto) {
-        return ResponseEntity.ok(reviewService.updateReview(animeId, reviewId, requestDto));
+        return ResponseEntity.ok(reviewService.updateReview(customUser.getUserId(), animeId, reviewId, requestDto, customUser));
     }
 
-    // 애니메이션 리뷰 삭제
     @DeleteMapping("/{anime_id}/{review_id}")
     public ResponseEntity<Void> deleteReview(
+            @AuthenticationPrincipal CustomOAuth2User customUser,
             @PathVariable("anime_id") Long animeId,
             @PathVariable("review_id") Long reviewId) {
-        reviewService.deleteReview(animeId, reviewId);
+        reviewService.deleteReview(customUser.getUserId(), animeId, reviewId);
         return ResponseEntity.ok().build();
     }
 
-    // 특정 유저의 애니메이션 리뷰 조회
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<ReviewResponseDto>> getUserReviews(
+            @AuthenticationPrincipal CustomOAuth2User customUser,
             @PathVariable("user_id") Long userId) {
-        return ResponseEntity.ok(reviewService.getUserReviews(userId));
+        return ResponseEntity.ok(reviewService.getUserReviews(userId, customUser));
     }
 
-    // 애니메이션 리뷰 공유
     @GetMapping("/{anime_id}/{review_id}/share")
     public ResponseEntity<ReviewResponseDto> shareReview(
             @PathVariable("anime_id") Long animeId,
@@ -65,7 +71,6 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.shareReview(animeId, reviewId));
     }
 
-    // 애니메이션 리뷰 좋아요
     @PostMapping("/{anime_id}/{review_id}/like")
     public ResponseEntity<Void> likeReview(
             @PathVariable("anime_id") Long animeId,

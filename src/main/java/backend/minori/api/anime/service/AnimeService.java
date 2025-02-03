@@ -18,15 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeService {
     private final AnimeRepository animeRepository;
-
-    public List<AnimeSearchResponseDto> getAllAnimes() {
-        List<Anime> animes = animeRepository.findAll();
-        return animes.stream()
-                .map(AnimeSearchResponseDto::of)
-                .toList();
-    }
-
-    public List<AnimeSearchResponseDto> getAllAnimesWithPageable(int page, int size) {
+    public List<AnimeSearchResponseDto> getAllAnimes(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return animeRepository.findAll(pageable)
                 .map(AnimeSearchResponseDto::of)

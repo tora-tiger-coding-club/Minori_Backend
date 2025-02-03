@@ -11,4 +11,5 @@ public class EpisodeReviewUpdateRequestDto {
     private boolean isSpoiler;
     private boolean isPublic;
     private int star;
+    private String content;
 }

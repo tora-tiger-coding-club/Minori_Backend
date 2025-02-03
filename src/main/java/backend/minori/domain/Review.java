@@ -1,27 +1,27 @@
 package backend.minori.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "review")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Review extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "review_id")
-    private Long reviewId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "anime_id", nullable = false)
-    private Anime animeId;
+    private Anime anime;
 
     @Column(name = "content")
     private String content;
@@ -38,13 +38,13 @@ public class Review extends BaseTimeEntity {
     @Column(name = "is_public", nullable = false)
     private boolean isPublic;
 
-    public void updateReview(boolean isSpoiler, boolean isPublic, int star) {
+    public void updateReview(boolean isSpoiler, boolean isPublic, int star, String content) {
         this.isSpoiler = isSpoiler;
         this.isPublic = isPublic;
         this.star = star;
+        this.content = content;
     }
 
-    // 좋아요 증가를 위한 메서드
     public void increaseLikes() {
         this.likes += 1;
     }

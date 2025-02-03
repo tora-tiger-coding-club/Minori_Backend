@@ -21,9 +21,9 @@ public class EpisodeReviewResponseDto {
 
     public static EpisodeReviewResponseDto of(EpisodeReview review) {
         return EpisodeReviewResponseDto.builder()
-                .episodeReviewId(review.getEpisodeReviewId())
-                .userId(review.getUserId())
-                .animeId(review.getAnimeId())
+                .episodeReviewId(review.getId())
+                .userId(review.getUser().getId())
+                .animeId(review.getAnime().getId())
                 .content(review.getContent())
                 .star(review.getStar())
                 .likes(review.getLikes())
