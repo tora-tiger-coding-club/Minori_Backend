@@ -1,0 +1,105 @@
+name: GradleTest and SAM Deploy
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  pull_request:
+<<<<<<< HEAD
+<<<<<<< HEAD
+  push:
+    branches:
+      - dev
+=======
+    branches:
+      - ODWA-31-AWS-DEPLOY
+=======
+>>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
+  push:
+    branches:
+<<<<<<< HEAD
+      - ODWA-31-AWS-DEPLOY
+>>>>>>> da0c93c... make diff
+=======
+      - dev
+>>>>>>> a8e97d8... ODWA-31 BUILD: Set target branch to dev
+
+jobs:
+  gradle-test:
+    runs-on: ubuntu-latest
+<<<<<<< HEAD
+<<<<<<< HEAD
+    if: github.ref != 'refs/heads/dev'
+=======
+    if: github.ref != 'refs/heads/ODWA-31-AWS-DEPLOY'
+>>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
+=======
+    if: github.ref != 'refs/heads/dev'
+>>>>>>> a8e97d8... ODWA-31 BUILD: Set target branch to dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Gradle tests and build
+        run: ./gradlew build test
+
+  test-and-deploy:
+    runs-on: ubuntu-latest
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    if: github.ref == 'refs/heads/dev'
+=======
+    if: github.ref == 'refs/heads/ODWA-31-AWS-DEPLOY'
+>>>>>>> b80dccd... ODWA-31 FIX: workflow condition, optimization
+=======
+    if: github.event.pull_request.merged == true
+>>>>>>> def30b0... FIX: Action for the test
+=======
+    if: github.ref == 'refs/heads/dev'
+>>>>>>> a8e97d8... ODWA-31 BUILD: Set target branch to dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ap-northeast-2
+
+      - name: SAM build
+        run: sam build
+
+      - name: SAM deploy
+        run: sam deploy
